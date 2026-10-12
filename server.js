@@ -158,7 +158,7 @@ const server = http.createServer(async (req,res) => {
   const visitor = (req.headers['x-visitor-id'] || 'guest').slice(0,80);
   try {
     if (url.pathname.startsWith('/api/')) {
-      if (url.pathname === '/api/config' && req.method === 'GET') return send(res, 200, { cartoApiKey: process.env.CARTO_API_KEY || '', socialContacts: { zalo: process.env.ADMIN_ZALO_URL || '', facebook: process.env.ADMIN_FACEBOOK_URL || '', tiktok: process.env.ADMIN_TIKTOK_URL || '' } });
+      if (url.pathname === '/api/config' && req.method === 'GET') return send(res, 200, { socialContacts: { zalo: process.env.ADMIN_ZALO_URL || '', facebook: process.env.ADMIN_FACEBOOK_URL || '', tiktok: process.env.ADMIN_TIKTOK_URL || '' } });
       if (url.pathname === '/api/schools' && req.method === 'GET') return send(res, 200, await getSchools());
       if (url.pathname === '/api/admin/status' && req.method === 'GET') return send(res, 200, { authenticated: isAdmin(req) });
       if (url.pathname === '/api/admin/login' && req.method === 'POST') {

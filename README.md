@@ -67,7 +67,7 @@ Tin đăng được thêm qua `/quan-tri/dang-tin`, không nhập trực tiếp 
 - `Thiếu POSTGRES_DATABASE_URL`: thêm biến đúng project/environment và deploy lại.
 - `/api/admin/login` hiện HTML hoặc 404: kiểm tra deployment mới nhất đã có catch-all `api/[...path].js` và `vercel.json` không tự rewrite `/api/*` về chính nó.
 - Không upload được: kiểm tra `UPLOADTHING_TOKEN` là token V7 và đã redeploy sau khi thêm.
-- Bản đồ nền dùng OpenStreetMap, tự chuyển sang CARTO khi tile OSM lỗi. Bản đồ tin chỉ có ghim sau khi có tin đăng.
+- Bản đồ nền dùng OpenStreetMap, không cần CARTO API key. Bản đồ tin chỉ có ghim sau khi có tin đăng. Tuân thủ chính sách tile của OpenStreetMap và giữ dòng ghi công trên bản đồ.
 
 ## Media cũ
 

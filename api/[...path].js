@@ -133,7 +133,6 @@ module.exports = async (req, res) => {
 
     if (path === '/config' && req.method === 'GET') {
       return json(res, 200, {
-        cartoApiKey: process.env.CARTO_API_KEY || '',
         socialContacts: {
           zalo: process.env.ADMIN_ZALO_URL || '',
           facebook: process.env.ADMIN_FACEBOOK_URL || '',
