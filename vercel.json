@@ -4,6 +4,21 @@
     "api/[...path].js": {
       "maxDuration": 30
     },
+    "api/admin/login.js": {
+      "maxDuration": 30
+    },
+    "api/admin/status.js": {
+      "maxDuration": 30
+    },
+    "api/admin/logout.js": {
+      "maxDuration": 30
+    },
+    "api/listings/[id].js": {
+      "maxDuration": 30
+    },
+    "api/saved/[id].js": {
+      "maxDuration": 30
+    },
     "api/uploadthing.js": {
       "maxDuration": 30
     }

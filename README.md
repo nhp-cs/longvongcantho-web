@@ -25,12 +25,13 @@ Sau khi thay Environment Variables, tạo deployment mới để Vercel nạp gi
 
 API tự tạo ba bảng `listings`, `saved_listings`, `schools` khi nhận request đầu tiên và kết nối được Neon. Không cần chạy migration trước.
 
-Để thêm các trường mẫu ở Cần Thơ:
+Sau deployment mới, request đầu tiên tới API sẽ tự thêm bốn trường mẫu ở Cần Thơ. Không cần chạy SQL thủ công để chúng xuất hiện. Kiểm tra `https://<domain>/api/schools`; kết quả phải là một JSON array có các trường. Tải lại trang chủ, chọn trường rồi chọn bán kính 1–10 km. Bộ lọc bán kính chỉ lọc các tin đã có tọa độ; khi chưa có tin phù hợp, kết quả tin vẫn trống.
+
+Để chỉnh tọa độ hoặc thêm trường khác:
 
 1. Mở Neon → project → **SQL Editor** (hoặc **Query**).
 2. Mở file `database/schools-can-tho.sql` trong repo, copy toàn bộ SQL và chạy.
-3. Kiểm tra `https://<domain>/api/schools`; kết quả phải là JSON gồm các trường.
-4. Tải lại trang chủ để chọn trường và bán kính 1–10 km.
+3. Chạy SQL. Dữ liệu mẫu dùng `ON CONFLICT ... DO UPDATE`, nên có thể chạy lại để cập nhật tọa độ.
 
 Tọa độ trong file mẫu là ghim tham khảo; hãy kiểm tra vị trí cổng trường trên bản đồ và sửa cột `lat`, `lng` nếu cần. Thêm trường khác bằng SQL:
 
