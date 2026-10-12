@@ -1,40 +1,73 @@
-﻿# Nhà Trọ Cần Thơ
+# Lòng Vòng Cần Thơ
 
-Ứng dụng đăng tin phòng trọ. Giao diện chạy trên Vercel, nội dung tin đăng lưu trong PostgreSQL (Neon qua Vercel Marketplace); ảnh và video tải trực tiếp từ trình duyệt lên UploadThing. PostgreSQL chỉ lưu metadata tin đăng và URL file.
+Website đăng và tìm phòng trọ. Vercel chạy giao diện và API; Neon PostgreSQL lưu tin đăng, danh sách trường và tin đã lưu; ảnh/video mới tải trực tiếp lên UploadThing. Database chỉ giữ nội dung tin và URL media.
 
-## Cấu hình UploadThing
+## Cấu hình production
 
-1. Tạo ứng dụng tại https://uploadthing.com/dashboard.
-2. Mở ứng dụng vừa tạo → **API Keys** → tab **V7**.
-3. Copy token V7; thêm vào Vercel Environment Variables với tên `UPLOADTHING_TOKEN`. Không để token trong GitHub.
-4. Mỗi ảnh tối đa 2 MB; tối đa 8 ảnh/tin. Video tối đa 16 MB. Giới hạn này được cấu hình ở `api/uploadthing.js`.
+Trong đúng Vercel project đang gắn domain website, mở **Settings → Environment Variables** và đặt các biến dưới đây cho **Production**:
 
-## Deploy Vercel
-
-1. Push repository lên GitHub rồi import repository vào Vercel (Framework Preset: **Other**, Root Directory: thư mục chứa `package.json`).
-2. Kết nối PostgreSQL Neon qua Vercel Marketplace. API đọc `DATABASE_URL`, `POSTGRES_URL` hoặc `POSTGRES_DATABASE_URL`.
-3. Vào **Project → Settings → Environment Variables**, thêm các biến sau cho Production và Preview:
-
-| Key | Giá trị |
+| Biến | Giá trị |
 | --- | --- |
-| `ADMIN_PASSWORD` | Mật khẩu trang quản trị |
-| `SESSION_SECRET` | Chuỗi ngẫu nhiên dài để ký cookie quản trị |
+| `POSTGRES_DATABASE_URL` | Connection string Neon, thường bắt đầu bằng `postgresql://` |
+| `ADMIN_PASSWORD` | Mật khẩu để vào `/quan-tri` |
+| `SESSION_SECRET` | Chuỗi ngẫu nhiên dài dùng ký cookie đăng nhập |
 | `UPLOADTHING_TOKEN` | Token V7 trong UploadThing → API Keys |
 
-4. Đảm bảo Build Command là `npm run build`; lệnh này tạo browser bundle UploadThing trong `public/js/uploadthing-client.js`.
-5. Deploy hoặc redeploy. Mỗi lần đổi Environment Variables cần tạo deployment mới.
-6. Mở `https://<domain-vercel>/quan-tri`, đăng nhập rồi đăng thử tin có ảnh/video. Tệp xuất hiện trong UploadThing dashboard; thông tin tin và URL tệp được lưu trong PostgreSQL.
-
-Có thể tạo `SESSION_SECRET` bằng PowerShell:
+Tạo `SESSION_SECRET` trong PowerShell:
 
 ```powershell
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-## Chạy local
+Sau khi thay Environment Variables, tạo deployment mới để Vercel nạp giá trị.
 
-Server local cũ (`npm start`) vẫn dùng SQLite. Để thử các API serverless mới, dùng Vercel CLI (`vercel dev`) sau khi liên kết project và cấu hình các biến môi trường Development.
+## Bảng dữ liệu và danh sách trường
 
-## Dữ liệu cũ
+API tự tạo ba bảng `listings`, `saved_listings`, `schools` khi nhận request đầu tiên và kết nối được Neon. Không cần chạy migration trước.
 
-Các tin hiện có trong PostgreSQL giữ nguyên. URL media R2 đã lưu trước đó vẫn được hiển thị nếu bucket/domain R2 cũ còn hoạt động; các upload mới dùng UploadThing. File R2 không tự được chuyển sang UploadThing.
+Để thêm các trường mẫu ở Cần Thơ:
+
+1. Mở Neon → project → **SQL Editor** (hoặc **Query**).
+2. Mở file `database/schools-can-tho.sql` trong repo, copy toàn bộ SQL và chạy.
+3. Kiểm tra `https://<domain>/api/schools`; kết quả phải là JSON gồm các trường.
+4. Tải lại trang chủ để chọn trường và bán kính 1–10 km.
+
+Tọa độ trong file mẫu là ghim tham khảo; hãy kiểm tra vị trí cổng trường trên bản đồ và sửa cột `lat`, `lng` nếu cần. Thêm trường khác bằng SQL:
+
+```sql
+INSERT INTO schools (id, name, address, lat, lng)
+VALUES ('ma-truong', 'Tên trường', 'Địa chỉ', 10.0, 105.7);
+```
+
+Tin đăng được thêm qua `/quan-tri/dang-tin`, không nhập trực tiếp bằng SQL. Khi tạo tin, nhập thông tin phòng, chọn vị trí trên bản đồ, chọn ảnh/video rồi bấm **Đăng tin**. Ảnh tối đa 8 ảnh, video tối đa 16 MB; dữ liệu tin và URL ảnh/video được ghi vào Neon sau khi upload thành công.
+
+## Routes API
+
+- `GET /api/listings` — danh sách tin, hỗ trợ `schoolId` và `schoolKm`.
+- `GET /api/listings/:id` — chi tiết tin.
+- `GET /api/schools` — danh sách trường dùng cho lọc gần trường.
+- `GET /api/saved`, `POST/DELETE /api/saved/:id` — tin đã lưu.
+- `POST /api/admin/login`, `GET /api/admin/status`, `POST /api/admin/logout` — phiên quản trị.
+- UploadThing dùng `/api/uploadthing`.
+
+## Deploy lên Vercel
+
+- Framework Preset: **Other**.
+- Root Directory: thư mục có `package.json` và `vercel.json`.
+- Build Command: `npm run build`.
+- Node.js: 22 trở lên.
+- Kết nối GitHub branch `main`; mỗi commit mới sẽ tạo deployment.
+
+`npm run build` đóng gói UploadThing browser client. `server.js` là server SQLite cũ để chạy local, không phải entrypoint của Vercel.
+
+## Xử lý lỗi nhanh
+
+- `/api/listings` trả `[]`: API và Neon đã kết nối, nhưng chưa có tin đăng.
+- `Thiếu POSTGRES_DATABASE_URL`: thêm biến đúng project/environment và deploy lại.
+- `/api/admin/login` hiện HTML hoặc 404: kiểm tra deployment mới nhất đã có catch-all `api/[...path].js` và `vercel.json` không tự rewrite `/api/*` về chính nó.
+- Không upload được: kiểm tra `UPLOADTHING_TOKEN` là token V7 và đã redeploy sau khi thêm.
+- Bản đồ nền dùng OpenStreetMap, tự chuyển sang CARTO khi tile OSM lỗi. Bản đồ tin chỉ có ghim sau khi có tin đăng.
+
+## Media cũ
+
+URL media R2 đã có trong dữ liệu vẫn cần nơi lưu cũ để tiếp tục hiển thị; file R2 không tự chuyển sang UploadThing.

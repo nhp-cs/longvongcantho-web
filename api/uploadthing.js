@@ -19,3 +19,4 @@ const router = {
 const app = express();
 app.use('/api/uploadthing', createRouteHandler({ router }));
 module.exports = (req, res) => app(req, res);
+module.exports.config = { api: { bodyParser: false } };
