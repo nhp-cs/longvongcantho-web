@@ -1,0 +1,12 @@
+{
+  "functions": { "api/[...path].js": { "maxDuration": 30 } },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/quan-tri/dang-tin", "destination": "/create.html" },
+    { "source": "/quan-tri", "destination": "/admin.html" },
+    { "source": "/da-luu", "destination": "/saved.html" },
+    { "source": "/tai-khoan", "destination": "/account.html" },
+    { "source": "/tin/:id", "destination": "/detail.html" },
+    { "source": "/dang-tin", "destination": "/quan-tri/dang-tin" }
+  ]
+}

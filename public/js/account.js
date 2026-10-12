@@ -1,0 +1,1 @@
+document.querySelector('#visitor').textContent=visitorId;api('/api/saved').then(items=>document.querySelector('#savedCount').textContent=`${items.length} tin`).catch(()=>document.querySelector('#savedCount').textContent='Không tải được');

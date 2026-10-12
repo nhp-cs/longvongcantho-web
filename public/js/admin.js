@@ -1,0 +1,2 @@
+api('/api/admin/status').then(state=>{if(state.authenticated)location.replace('/quan-tri/dang-tin')});
+document.querySelector('#adminLogin').onsubmit=async event=>{event.preventDefault();const password=new FormData(event.currentTarget).get('password');const error=document.querySelector('#loginError');error.textContent='';try{await api('/api/admin/login',{method:'POST',body:JSON.stringify({password})});location.replace('/quan-tri/dang-tin')}catch(problem){error.textContent=problem.message;event.currentTarget.password.value=''}};
