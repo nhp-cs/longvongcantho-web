@@ -103,7 +103,6 @@ const canThoUniversitiesAndColleges = [
   {id:'cd-can-tho',name:'Trường Cao đẳng Cần Thơ',lat:10.0085,lng:105.7560},
   {id:'ctec',name:'Trường Cao đẳng Kinh tế – Kỹ thuật Cần Thơ',lat:10.0430,lng:105.7460},
   {id:'cd-y-te-can-tho',name:'Trường Cao đẳng Y tế Cần Thơ',lat:10.0442,lng:105.7653},
-  {id:'cd-du-lich-can-tho',name:'Trường Cao đẳng Du lịch Cần Thơ',lat:10.0660,lng:105.7510},
   {id:'cd-nghe-can-tho',name:'Trường Cao đẳng Nghề Cần Thơ',lat:10.0425,lng:105.7470}
 ];
 async function getSchools() { return canThoUniversitiesAndColleges; }
