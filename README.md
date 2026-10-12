@@ -25,7 +25,7 @@ Sau khi thay Environment Variables, tạo deployment mới để Vercel nạp gi
 
 API tự tạo ba bảng `listings`, `saved_listings`, `schools` khi nhận request đầu tiên và kết nối được Neon. Không cần chạy migration trước.
 
-Sau deployment mới, request đầu tiên tới API sẽ tự thêm bốn trường mẫu ở Cần Thơ. Không cần chạy SQL thủ công để chúng xuất hiện. Kiểm tra `https://<domain>/api/schools`; kết quả phải là một JSON array có các trường. Tải lại trang chủ, chọn trường rồi chọn bán kính 1–10 km. Bộ lọc bán kính chỉ lọc các tin đã có tọa độ; khi chưa có tin phù hợp, kết quả tin vẫn trống.
+Sau deployment mới, request đầu tiên tới API sẽ tự thêm danh sách cơ sở đại học/cao đẳng vào Neon. Kiểm tra `https://<domain>/api/schools`; kết quả phải là JSON array. Bộ lọc địa chỉ có sẵn 103 phường/xã hiện hành, các khu vực/quận cũ để khớp tin đăng cũ, và các đường phổ biến; địa chỉ từ tin đăng mới cũng tự được đưa vào danh sách. Giá thuê có mức trần tăng từng 500.000 đồng. Bán kính luôn mở; chọn trường để lọc tin trong bán kính đã chọn.
 
 Để chỉnh tọa độ hoặc thêm trường khác:
 
@@ -33,7 +33,7 @@ Sau deployment mới, request đầu tiên tới API sẽ tự thêm bốn trư�
 2. Mở file `database/schools-can-tho.sql` trong repo, copy toàn bộ SQL và chạy.
 3. Chạy SQL. Dữ liệu mẫu dùng `ON CONFLICT ... DO UPDATE`, nên có thể chạy lại để cập nhật tọa độ.
 
-Tọa độ trong file mẫu là ghim tham khảo; hãy kiểm tra vị trí cổng trường trên bản đồ và sửa cột `lat`, `lng` nếu cần. Thêm trường khác bằng SQL:
+Tọa độ trong file mẫu là ghim tham khảo; hãy kiểm tra vị trí cổng trường trên bản đồ và sửa cột `lat`, `lng` nếu cần. Chạy lại SQL mẫu để cập nhật các trường đã có và thêm trường mới. Thêm trường khác bằng SQL:
 
 ```sql
 INSERT INTO schools (id, name, address, lat, lng)
